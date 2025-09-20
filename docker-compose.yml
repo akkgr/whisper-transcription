@@ -1,0 +1,13 @@
+services:
+  whisper:
+    build: .
+    ports:
+      - "7860:7860"
+    volumes:
+      - whisper-models:/root/.cache/whisper
+    environment:
+      - XDG_CACHE_HOME=/root/.cache
+    restart: unless-stopped
+
+volumes:
+  whisper-models:
