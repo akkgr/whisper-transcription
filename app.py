@@ -38,8 +38,23 @@ def transcribe(audio_file):
     
     try:
         # Use Whisper to transcribe and translate to English
-        result = model.transcribe(file_path, language="en")
-        return result['text']
+        # Remove language="en" to allow auto-detection
+        result = model.transcribe(file_path, task="translate")
+        
+        # Get detected language code and convert to full name
+        detected_language_code = result.get('language', 'unknown')
+        
+        # Whisper's language names mapping
+        from whisper.tokenizer import LANGUAGES
+        detected_language_name = LANGUAGES.get(detected_language_code, detected_language_code).title()
+        
+        transcription = result['text']
+        
+        # Format output with language info
+        output = f"**Detected Language:** {detected_language_name}\n\n**Transcription (English):**\n{transcription}"
+        
+        print(f"Detected language: {detected_language_name} ({detected_language_code})")
+        return output
     except Exception as e:
         return f"Error processing audio: {str(e)}"
 
