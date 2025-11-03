@@ -59,4 +59,4 @@ def transcribe(audio_file):
         return f"Error processing audio: {str(e)}"
 
 interface = gr.Interface(fn=transcribe, inputs=gr.File(file_types=["audio"]), outputs=gr.Textbox(lines=10, max_lines=20, show_copy_button=True))
-interface.launch(server_name="0.0.0.0", share=True)
+interface.launch(server_name="0.0.0.0", share=True, show_error=True)

@@ -8,6 +8,33 @@ services:
     environment:
       - XDG_CACHE_HOME=/root/.cache
     restart: unless-stopped
+    networks:
+      - whisper-network
+
+  whisper-api:
+    build:
+      context: ./WhisperApi
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./audio/input:/audio/input
+      - ./audio/output:/audio/output
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - AudioMonitor__InputFolder=/audio/input
+      - AudioMonitor__OutputFolder=/audio/output
+      - AudioMonitor__WhisperUrl=http://whisper:7860/
+    depends_on:
+      - whisper
+    restart: unless-stopped
+    networks:
+      - whisper-network
 
 volumes:
   whisper-models:
+
+networks:
+  whisper-network:
+    driver: bridge
